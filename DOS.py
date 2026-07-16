@@ -185,6 +185,24 @@ def create_file(cmd):
     except Exception as e:
         print(f"Error: {e}")
 
+def create_folder(cmd):
+    
+    parts = cmd.split(" ", 1)
+
+    if len(parts) < 2:
+        print("Usage: NEWD <Directory>")
+        return
+
+    foldername = parts[1].strip().strip('"')
+
+    folderpath = os.path.join(current_dir, foldername)
+
+    try:
+        os.makedirs(folderpath, exist_ok=True)
+        print("Folder created:", foldername)
+    except Exception as e:
+        print(f"Error: {e}")
+
 def remove_file(cmd):
 
     parts = cmd.split(" ", 1)
@@ -216,18 +234,6 @@ def remove_file(cmd):
         print("Permission denied.")
 
     except Exception as e:
-        print(f"Error: {e}")
-
-def edit_file(filename):
-
-    filepath = os.path.join(current_dir, filename)
-
-    try:
-
-        os.system(f'notepad "{filepath}"')
-
-    except Exception as e:
-
         print(f"Error: {e}")
 
 def list_directory():
@@ -551,18 +557,11 @@ while True:
             create_file(cmd)
 
         # =====================================
-        # EDIT
+        # NEWD
         # =====================================
 
-        elif command == "EDIT":
-
-            if len(args) == 0:
-
-                edit_file(input("Enter file name to edit: "))
-
-                continue
-
-            edit_file(args)
+        elif command == "NEWD":
+            create_folder(cmd)
 
         # =====================================
         # RUN
