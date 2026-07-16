@@ -640,13 +640,11 @@ VD          - View directory contents
 NEW         - Create file
 EDIT        - Edit file
 RUN         - Run program/file
-LOCK        - Lock system
 TSKS        - Show processes
 KILLTSK     - Kill process
 SDWN        - Shutdown PC
 REBOOT      - Reboot PC
 EXIT        - Exit TMOS
-SETTINGS    - Open settings hub
 """)
 
         # =====================================
