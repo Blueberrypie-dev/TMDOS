@@ -10,3 +10,19 @@ The idea isn't that complex: create a Windows-based environment for CLI lovers. 
 - [ ] Login System (Going to use Credential Providers)
 - [ ] UEFI custom boot (for verbose boot screen)
 - [ ] Other stuff going to be revealed later
+
+## How to build
+First of all, make sure you have installed
+- Python
+- PIP (Comes with Python)
+- PyInstaller (Use PIP to download it)
+
+After having all these apps in your PATH, build it using the following code:
+
+```
+pyinstaller DOS.py
+```
+or:
+```
+python -m pyinstaller DOS.py
+```
