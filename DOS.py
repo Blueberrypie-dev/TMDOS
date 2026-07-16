@@ -16,7 +16,7 @@ shell_name = "TMDOS Command Prompt"
 
 shell_version = "0.1"
 
-shell_build = "19"
+shell_build = "20"
 
 
 
@@ -53,11 +53,7 @@ def get_gpu():
 def quit_shell():
 
     clear()
-
-    print("Shutting down TMOS...")
-
-    time.sleep(1)
-
+    
     sys.exit()
 
 def show_sysinfo():
