@@ -8,6 +8,38 @@ import platform
 from datetime import datetime
 import webbrowser
 import psutil
+import ctypes
+from ctypes import wintypes
+
+kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+user32 = ctypes.WinDLL("user32", use_last_error=True)
+
+STD_OUTPUT_HANDLE = -11
+CONSOLE_FULLSCREEN_MODE = 1
+
+VK_F11 = 0x7A
+KEYEVENTF_KEYUP = 0x0002
+
+class COORD(ctypes.Structure):
+    _fields_ = [
+        ("X", wintypes.SHORT),
+        ("Y", wintypes.SHORT),
+    ]
+
+def buffer():
+    hConsole = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+
+    newSize = COORD()
+
+    if not kernel32.SetConsoleDisplayMode(
+        hConsole,
+        CONSOLE_FULLSCREEN_MODE,
+        ctypes.byref(newSize)
+    ):
+        user32.keybd_event(VK_F11, 0, 0, 0)
+        user32.keybd_event(VK_F11, 0, KEYEVENTF_KEYUP, 0)
+
+buffer()
 # =====================================
 # UTIL
 # =====================================
