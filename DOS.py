@@ -391,7 +391,7 @@ def SET(args):
 clear()
 
 print("===============================================")
-print(f"            {shell_name} v{shell_version} Build {shell_build}")
+print(f"     {shell_name} v{shell_version} Build {shell_build}")
 print("===============================================")
 
 # =====================================
