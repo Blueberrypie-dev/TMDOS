@@ -5,52 +5,20 @@ import shutil
 import time
 import os
 import platform
-import curses
 from datetime import datetime
 import webbrowser
-from System.Core.Paths import AppDir
-from System.Core.BSOD import bsod
+import psutil
 # =====================================
 # UTIL
 # =====================================
 
-required_files = [
-    AppDir / "System" / "Core" / "Login.py",
-    AppDir / "System" / "Core" / "Paths.py",
-    AppDir / "System" / "SetApps" / "LogHub.py",
-    AppDir / "System" / "Core" / "Boot.py",
-    AppDir / "System" / "SetApps" / "SetHub.py",
-    AppDir / "System" / "SetApps" / "Countcreate.py",
-    AppDir / "System" / "SetApps" / "Countedit.py"
-]
+shell_name = "TMDOS Command Prompt"
 
-missing = [file for file in required_files if not file.exists()]
+shell_version = "0.0.8"
 
-if missing:
+shell_build = "18"
 
-    os.system("type nul > " + str(AppDir / "System" / "Core" / "Logs" / "boot_error.log"))
-    
-    with open(AppDir / "System" / "Core" / "Logs" / "boot_error.log", "w", encoding="utf-8") as log:
 
-        log.write("Missing files:\n\n")
-
-        for file in missing:
-            log.write(str(file) + "\n")
-
-    curses.wrapper(bsod)
-
-    sys.exit()
-else:    
-    from System.SetApps.SetHub import settings
-    from System.Core.Boot import boot_screen, get_gpu, get_ram, kernel_name, kernel_version, shell_build, shell_name, shell_version
-    from System.Core.Login import lockscreen
- 
-  
-boot_screen()
-
-users_file = os.path.join(AppDir, "settings", "users.json")
-
-username = lockscreen()
 
 current_dir = Path("C:\\")
 
@@ -68,8 +36,19 @@ def pause():
 
 variaveis = {}
 
-def whoami():
-    print(username)
+def get_gpu():
+
+    try:
+
+        gpu = subprocess.check_output(
+            "wmic path win32_VideoController get name",
+            shell=True
+        ).decode(errors="ignore").split("\n")[1].strip()
+
+        return gpu if gpu else "Unknown GPU"
+
+    except Exception:
+        return "Unknown GPU"
 
 def quit_shell():
 
@@ -87,8 +66,6 @@ def show_sysinfo():
 
     print("OS:", shell_name + " " + shell_version + " Build " + shell_build)
 
-    print("Kernel:", kernel_name + " " + kernel_version)
-
     print("CPU:", platform.processor())
 
     print("RAM:", get_ram())
@@ -97,7 +74,61 @@ def show_sysinfo():
 
     print("GPU:", get_gpu())
 
-    print("Kernel Version:", kernel_name + " " + kernel_version)
+def get_ram():
+
+    try:
+
+        # Usa psutil se disponível
+        if psutil is not None:
+
+            ram = psutil.virtual_memory().total / (1024 ** 3)
+
+            return f"{round(ram, 2)} GB"
+
+        # Fallback Windows
+        if platform.system() == "Windows":
+
+            import ctypes
+
+            class MEMORYSTATUSEX(ctypes.Structure):
+
+                _fields_ = [
+                    ("dwLength", ctypes.c_ulong),
+                    ("dwMemoryLoad", ctypes.c_ulong),
+                    ("ullTotalPhys", ctypes.c_ulonglong),
+                    ("ullAvailPhys", ctypes.c_ulonglong),
+                    ("ullTotalPageFile", ctypes.c_ulonglong),
+                    ("ullAvailPageFile", ctypes.c_ulonglong),
+                    ("ullTotalVirtual", ctypes.c_ulonglong),
+                    ("ullAvailVirtual", ctypes.c_ulonglong),
+                    ("sullAvailExtendedVirtual", ctypes.c_ulonglong),
+                ]
+
+            stat = MEMORYSTATUSEX()
+
+            stat.dwLength = ctypes.sizeof(MEMORYSTATUSEX)
+
+            ctypes.windll.kernel32.GlobalMemoryStatusEx(
+                ctypes.byref(stat)
+            )
+
+            ram = stat.ullTotalPhys / (1024 ** 3)
+
+            return f"{round(ram, 2)} GB"
+
+        # Fallback Linux/macOS
+        else:
+
+            pages = os.sysconf("SC_PHYS_PAGES")
+            page_size = os.sysconf("SC_PAGE_SIZE")
+
+            ram = pages * page_size / (1024 ** 3)
+
+            return f"{round(ram, 2)} GB"
+
+    except Exception:
+
+        return "Unknown"
 
 def run_program(cmd):
 
@@ -394,16 +425,6 @@ while True:
         if command == "EXIT":
 
             quit_shell()     
-
-        # =====================================
-        # LOCK
-        # =====================================
-
-        elif command == "LOCK":
-
-            lockscreen()
-
-            clear()
         
         # =====================================
         # DISP
@@ -427,14 +448,6 @@ while True:
         elif command == "REF":
             remove_file(cmd)
             
-        # =====================================
-        # WHOAMI
-        # =====================================
-
-        elif command == "WHOAMI":
-
-            whoami()
-
         # =====================================
         # DATE
         # =====================================
@@ -508,12 +521,6 @@ while True:
 
                 current_dir = parent
         
-        # =====================================
-        # SETTINGS
-        # =====================================
-        elif command == "SETTINGS":
-
-            curses.wrapper(settings)
         # =====================================
         # GO
         # =====================================
