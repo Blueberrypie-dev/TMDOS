@@ -14,9 +14,9 @@ import psutil
 
 shell_name = "TMDOS Command Prompt"
 
-shell_version = "0.0.8"
+shell_version = "0.1"
 
-shell_build = "18"
+shell_build = "19"
 
 
 
