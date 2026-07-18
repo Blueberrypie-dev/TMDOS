@@ -6,7 +6,7 @@ This is a project I'm glad to announce because I've been working a lot on it. I 
 ## The idea:
 The idea isn't that complex: create a Windows-based environment for CLI lovers. This is a little progress checker for the 1.0 version to be complete:
 
-- [x] Command prompt (Still getting some final adjustments)
+- [x] Command prompt
 - [ ] Login System (Going to use Credential Providers)
 - [ ] UEFI custom boot (for verbose boot screen)
 - [ ] Other stuff going to be revealed later
